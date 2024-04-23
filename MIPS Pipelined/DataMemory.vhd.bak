@@ -1,0 +1,67 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity MyDataMemory is
+        port ( 
+	CLK : in STD_LOGIC;
+	Address : in  STD_LOGIC_VECTOR (31 downto 0);
+	WD : in  STD_LOGIC_VECTOR (31 downto 0);
+	RE : in  STD_LOGIC;
+	WE : in  STD_LOGIC;
+	Read_Data : out  STD_LOGIC_VECTOR (31 downto 0));
+end MyDataMemory;
+
+architecture Behavioral of MyDataMemory is
+	type Memory is array (0 to 31) of STD_LOGIC_VECTOR(31 downto 0);
+	signal DMem : Memory := (
+		X"00000000",
+		X"00000001",
+		X"00000001",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000",
+		X"00000000"
+	);
+
+begin
+
+	process (CLK)
+	begin
+		if (rising_edge(CLK)) then
+			if (WE = '1') then
+				DMem(TO_INTEGER(UNSIGNED(Address))) <= WD;
+			end if;
+			if (RE = '1') then
+				Read_Data <= DMem(TO_INTEGER(UNSIGNED(Address)));
+			end if;
+		end if;
+	end process;
+
+end Behavioral;

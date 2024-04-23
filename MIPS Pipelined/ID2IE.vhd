@@ -1,0 +1,55 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+
+entity MyID2IE is
+	port (
+        RD1D, RD2D, SignImmD                                        : in STD_LOGIC_VECTOR (31 downto 0);
+        RsD, RtD, RdD                                               : in STD_LOGIC_VECTOR (4 downto 0);
+        RegWriteD, MemtoRegD, MemWriteD, MemReadD, ALUSrcD, RegDstD : in STD_LOGIC;
+        FlushE                                                      : in STD_LOGIC;
+        CLK                                                         : in STD_LOGIC;
+        ALUOpD                                                      : in  STD_LOGIC_VECTOR (1 downto 0);
+        RegWriteE, MemtoRegE, MemWriteE, MemReadE, ALUSrcE, RegDstE : out STD_LOGIC;
+        RsE, RtE, RdE                                               : out STD_LOGIC_VECTOR (4 downto 0);
+        RD1E, RD2E, SignImmE                                        : out STD_LOGIC_VECTOR (31 downto 0);
+        ALUOpE                                                      : out  STD_LOGIC_VECTOR (1 downto 0));
+end MyID2IE;
+
+architecture Behavioral of MyID2IE is
+begin
+
+process(CLK)
+
+begin
+     if (falling_edge(CLK) and FlushE = '1') then
+     RD1E <= "00000000000000000000000000000000";
+     RD2E <= "00000000000000000000000000000000"; 
+     SignImmE <= "00000000000000000000000000000000";
+     RegWriteE <= '0';
+     MemtoRegE <= 'X';
+     MemWriteE <= '0';
+     MemReadE <= '0';
+     ALUSrcE <= 'X';
+     RegDstE <= 'X';
+     RsE <= "00000";
+     RtE <= "00000";
+     RdE <= "00000";
+     ALUOpE <= "XX";
+     elsif (falling_edge(CLK) and FlushE = '0') then
+     RD1E <= RD1D;
+     RD2E <= RD2D; 
+     SignImmE <= SignImmD;
+     RegWriteE <= RegWriteD;
+     MemtoRegE <= MemtoRegD;
+     MemWriteE <= MemWriteD;
+     MemReadE <= MemReadD;
+     ALUSrcE <= ALUSrcD;
+     RegDstE <= RegDstD;
+     RsE <= RsD;
+     RtE <= RtD;
+     RdE <= RdD;
+     ALUOpE <=  ALUOpD;
+     end if;
+end process;
+
+end Behavioral;

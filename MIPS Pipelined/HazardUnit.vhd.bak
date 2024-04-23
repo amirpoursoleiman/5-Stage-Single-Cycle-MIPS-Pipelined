@@ -1,0 +1,57 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+
+entity MyHazardUnit is
+	port (    
+	RsD, RtD, RsE, RtE, WriteRegE, WriteRegM, WriteRegW        : in STD_LOGIC_VECTOR (4 downto 0);
+        BranchD, MemtoRegE, RegWriteE, RegWriteM, RegWriteW        : in STD_LOGIC;
+	StallF, StallD, FlushE                                     : out STD_LOGIC;
+        ForwardAE, ForwardBE                                       : out STD_LOGIC_VECTOR (1 downto 0));
+end MyHazardUnit;
+
+architecture Behavioral of MyHazardUnit is
+begin
+
+process (RsE,WriteRegM,RegWriteM)
+begin
+
+	if((not(RsE = "00000")) and (RsE = WriteRegM) and RegWriteM = '1') then
+		ForwardAE <= "01";
+	elsif((not(RsE = "00000")) and (RsE = WriteRegW) and RegWriteW = '1') then
+		ForwardAE <= "10";
+	else
+		ForwardAE <= "00";
+	end if;	
+
+end process;
+
+process (RtE,WriteRegM,RegWriteM)
+begin
+
+	if((not(RtE = "00000")) and (RtE = WriteRegM) and RegWriteM = '1') then
+		ForwardBE <= "01";
+	elsif((not(RtE = "00000")) and (RtE = WriteRegW) and RegWriteW = '1') then
+		ForwardBE <= "10";
+	else
+		ForwardBE <= "00";
+	end if;
+	
+end process;
+
+process (MemtoRegE, BranchD)
+begin
+
+	if(((RsD = RtE) or (RtD = RtE)) and MemtoRegE = '1') then
+	StallF <= '1';
+	StallD <= '1';
+	FlushE <= '1';
+	else
+	StallF <= '0';
+	StallD <= '0';
+	FlushE <= '0';
+	end if;	
+
+end process;
+	
+end Behavioral;
+
